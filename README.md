@@ -1,9 +1,3 @@
-[![Travis CI Build Status](https://img.shields.io/travis/bd-R/bdDwC.svg?branch=master?style=flat-square&label=Travis+CI)](https://travis-ci.org/bd-R/bdDwC) 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/bd-R/bdDwC?branch=master&svg=true)](https://ci.appveyor.com/project/bd-R/bdDwC) 
-[![Coverage Status](https://img.shields.io/codecov/c/github/bd-R/bdDwC/master.svg)](https://codecov.io/github/bd-R/bdDwC?branch=master)   
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/bdDwC)](https://cran.r-project.org/package=bdDwC) 
-[![CRAN_Download_Badge](https://cranlogs.r-pkg.org/badges/grand-total/bdDwC)](https://cran.r-project.org/package=bdDwC) 
-
 
 # bdDwC
 
@@ -39,27 +33,3 @@ Run `bdDwC` `shiny` app with:
     run_dwc()
 
 ---
-
-To use `bdDwC` from the command line:
-
-Load `bdDwC` package
-
-    library(bdDwC)
-
-`bdDwC` contains Indian Reptile dataset `bdDwC:::data_reptiles`.  
-Darwinize data with `darwinize_names` (replace `bdDwC:::data_reptiles` with wanted dataset):
-
-    result <- darwinize_names(dataUser = bdDwC:::data_reptiles,
-                              dataDWC  = bdDwC:::data_darwin_cloud$data)
-
-
-Rename your data using `bdDwC` with `rename_user_data`:
-
-    # Replace `bdDwC:::data_reptiles` with wanted dataset
-    rename_user_data(bdDwC:::data_reptiles, result)
-
-To get newest version of Darwin Cloud Data run:
-
-    download_cloud_data()
-
-which will download data from the remote repository and extract field and standard names.
