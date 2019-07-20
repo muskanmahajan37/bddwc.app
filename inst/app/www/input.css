@@ -1,0 +1,39 @@
+.readyButton .btn{
+    background-color: transparent;
+}
+
+.activeButton .btn{
+    background-color: #795548;
+    color: #fff;
+}
+
+.completedButton .btn{
+    background-color: green;
+    color: white
+}
+
+.bdDictionaryInput-text .activeButton{
+    background-color: #795548;
+    color: #fff;
+}
+
+
+#controls .btn{
+    margin: 10px 10px 10px 10px;
+    width: 50px;
+}
+
+#controls .readyButton{
+    background-color: orange;
+        color: #fff;
+}
+
+#controls .activeButton{
+    background-color: orange;
+    color: #fff;
+}
+
+#controls .completedButton{
+    background-color: green;
+    color: white
+}

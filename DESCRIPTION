@@ -1,0 +1,29 @@
+Package: bddwc.app
+Title: Graphical User Interface for Darwinizing Biodiversity Datasets
+Version: 0.0.0.9000
+Authors@R: person('Thiloshon', 'Nagarajah', email = 'thiloshon@gmail.com', role = c('cre', 'aut'))
+Description: Standardizing biodiversity datasets with DWCA Terms Standard Names.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    shiny,
+    golem,
+    DT,
+    attempt,
+    glue,
+    htmltools,
+    rgbif,
+    rstudioapi,
+    spocc,
+    data.table,
+    shinyjs,
+    bdDwC,
+    leaflet
+Remotes: 
+    Thinkr-open/golem
+RoxygenNote: 6.1.1
+URL: https://github.com/bd-R/bddwc.app
+BugReports: https://github.com/bd-R/bddwc.app/issues
+Suggests: 
+    testthat

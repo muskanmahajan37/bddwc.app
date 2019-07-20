@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans");
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+
+body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.shiny-notification{
+    position: fixed;
+    top: 33%;
+    left: 33%;
+    right: 33%;
+    opacity: 1;
+}
+
+#shiny-notification-panel .progress-bar{
+    background-color: #795548
+}
+
+.secondaryHeaders, a{
+    color: #795548;
+}   
+
+
+.skin-blue .main-header .navbar {
+   background-color: #795548;
+}
+
+.skin-blue .main-header .logo {
+     background-color: #795548;
+}
+
+.skin-blue .main-header .logo:hover {
+     background-color: #795548;
+}
+
+.skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
+    border-left-color: #795548;
+}
+
+
+.bdDictionaryInput-text .shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+    height: 600px;
+}
+
+
+.bdDictionaryInput-text textarea.form-control {
+    height: 100%;
+}
+
+
+.bdDictionaryInput-text .form-control {
+    font-family: Consolas,monaco,monospace;
+    padding: 12px 18px;
+    border: 1px #795548;
+}
+
+#bdDarwinizer-IDE {
+    font-size: 11px;
+    line-height: .8;
+}
+
+#origin {
+        border: 2px solid crimson;
+}
+
+#fixed {
+        border: 2px solid #00a65a;
+}
+
+#controls{
+  position: fixed;
+  margin-left: 5%;
+    margin-top: 10%;
+}
+
+.control-header{
+    text-align: center;
+}
+
+#controls {
+    text-align: center;
+}
+
+#controls .button {
+    position: absolute;
+}
+
+#controls button {
+    box-shadow: 0 4px 8px 0 #ff9c0036, 0 6px 20px 0 #ff9c002e;
+}
+
+.stats-red{
+    font-size: 60px;
+    color: crimson;
+    font-family: 'Roboto Slab', serif;
+}
+
+.stats-green{
+    font-size: 60px;
+    color: #00a65a;
+    font-family: 'Roboto Slab', serif;
+}
