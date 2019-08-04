@@ -57,21 +57,28 @@ body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
 }
 
 #bdDarwinizer-IDE {
+  overflow-x: hidden !important;
     font-size: 11px;
     line-height: .8;
 }
 
+#bdDarwinizer-IDE .dataTables_scrollBody {
+  overflow-x: hidden !important;
+}
+
 #origin {
+  padding-bottom: 30px;
         border: 2px solid crimson;
 }
 
 #fixed {
+  padding-bottom: 30px;
         border: 2px solid #00a65a;
 }
 
 #controls{
   position: fixed;
-  margin-left: 5%;
+  
     margin-top: 10%;
 }
 
@@ -81,6 +88,11 @@ body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
 
 #controls {
     text-align: center;
+}
+
+.dataTables_info {
+  text-align: center;
+  float: none !important;
 }
 
 #controls .button {
@@ -101,4 +113,78 @@ body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
     font-size: 60px;
     color: #00a65a;
     font-family: 'Roboto Slab', serif;
+}
+
+.dataTables_scrollBody {
+  max-height: 70vh;
+}
+
+
+
+#bdDarwinizer-IDE ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+#bdDarwinizer-IDE ::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+
+
+
+#bdDarwinizer-IDE ::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: transparent;
+	background-color: transparent;
+}
+
+#bdDarwinizer-IDE ::-webkit-scrollbar
+{
+	width: 5px;
+	height: 5px;
+	background-color: transparent;
+}
+
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb
+{
+	background-color: #795548;	
+	background-image: -webkit-linear-gradient(45deg,
+	                                          rgba(255, 255, 255, .2) 25%,
+											  transparent 25%,
+											  transparent 50%,
+											  rgba(255, 255, 255, .2) 50%,
+											  rgba(255, 255, 255, .2) 75%,
+											  transparent 75%,
+											  transparent)
+}
+
+
+#dictionaryToDarwinDiv{
+    margin-left: 15px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    float: none !important;
+    text-align: center !important;
+}
+
+.dataTables_wrapper {
+    margin-top: 20px;
+    
+}
+
+#bdDarwinizer-dictionary{
+    margin-top: 80px;
 }

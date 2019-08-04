@@ -7,7 +7,8 @@
 \usage{
 mod_add_dictionary_ui(id)
 
-mod_add_dictionary_server(input, output, session)
+mod_add_dictionary_server(input, output, session,
+  next_button_id = "dataToConfigureDiv")
 }
 \arguments{
 \item{id}{shiny id}

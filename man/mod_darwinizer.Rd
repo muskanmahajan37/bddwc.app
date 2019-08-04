@@ -7,7 +7,7 @@
 \usage{
 mod_darwinizer_ui(id)
 
-mod_darwinizer_server(input, output, session)
+mod_darwinizer_server(input, output, session, data_original, dictionary)
 }
 \arguments{
 \item{id}{shiny id}

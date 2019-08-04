@@ -1,5 +1,5 @@
 # Module UI
-  
+
 #' @title   mod_add_data_ui and mod_add_data_server
 #' @description  A shiny Module.
 #'
@@ -153,9 +153,9 @@ mod_add_data_ui <- function(id, label = "Add Occurrence Data"){
     )
   )
 }
-    
+
 # Module Server
-    
+
 #' @rdname mod_add_data
 #' @export
 #' @keywords internal
@@ -165,7 +165,7 @@ mod_add_data_ui <- function(id, label = "Add Occurrence Data"){
 #' @importFrom data.table fread
 #' @importFrom shinyjs runjs
 #' @import bdDwC DT leaflet
-mod_add_data_server <- function(input, output, session){
+mod_add_data_server <- function(input, output, session, next_button_id = "dataToConfigureDiv"){
   ns <- session$ns
   
   returnData <- data.frame()
@@ -295,8 +295,8 @@ mod_add_data_server <- function(input, output, session){
     shinyjs::runjs(code = paste('$("#', ns("queryDatabaseDiv"), '").removeClass("activeButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("inputFileDiv"), '").addClass("readyButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("inputFileDiv"), '").removeClass("activeButton");', sep = ""))
-    shinyjs::runjs(code = paste('$("#', "dataToConfigureDiv", '").addClass("completedButton");', sep = ""))
-    shinyjs::runjs(code = paste('$("#', "dataToConfigureDiv", '").removeClass("activeButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', next_button_id, '").addClass("completedButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', next_button_id, '").removeClass("activeButton");', sep = ""))
     
     
     showNotification("Read Data Successfully", duration = 2)
@@ -318,10 +318,10 @@ mod_add_data_server <- function(input, output, session){
   
   return(returnDataReact)
 }
-    
+
 ## To be copied in the UI
 # mod_add_data_ui("add_data_ui_1")
-    
+
 ## To be copied in the server
 # callModule(mod_add_data_server, "add_data_ui_1")
- 
+

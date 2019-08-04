@@ -46,3 +46,22 @@ summarizeDataframe <- function(data) {
     }
     temp_data
 }
+
+
+#' @title   summarize biodiversity dataframe
+#' @description  Summary table function.
+#'
+#' @param data biodiversity dataframe
+#'
+#' @keywords internal
+#' @export
+get_edit_string <- function(dataframe){
+    return(paste(capture.output(
+        write.table(
+            dataframe,
+            sep = '\t',
+            quote = F,
+            row.names = F
+        )
+    ), collapse = "\n "))
+}

@@ -27,32 +27,26 @@ mod_add_dictionary_ui <- function(id) {
         # 1
         tabPanel(
           "Cached",
-          div(class = "secondaryHeaders", h3("Option 01: From bddwc - Cached Darwin Cloud")),
-         
-         p("A version of Kurator project is stored and used.")
-          ,
-          
-          
+          div(class = "secondaryHeaders", h3(
+            "Option 01: From bddwc - Cached Darwin Cloud"
+          )),
+          p("A version of Kurator project is stored and used."),
           div(
             id = ns("queryDatabaseDiv"),
             class = "activeButton",
-            actionButton(ns("queryDatabase"), "Use Cached Dictionary", icon("download"))
+            actionButton(ns("cacheButton"), "Use Cached Dictionary", icon("download"))
           )
         ),
-        
         
         # 2
         tabPanel(
           "Cloud",
           div(class = "secondaryHeaders", h3("Option 02: From Darwin Cloud Server")),
-          
           p("Get update of the Darwin cloud and use.") ,
-          
-          
           div(
             id = ns("queryDatabaseDiv"),
             class = "activeButton",
-            actionButton(ns("queryDatabase"), "Update and Use", icon("download"))
+            actionButton(ns("updateCache"), "Update and Use", icon("download"))
           )
         ),
         
@@ -60,14 +54,14 @@ mod_add_dictionary_ui <- function(id) {
         tabPanel(
           "Edit",
           div(class = "secondaryHeaders", h3("Option 03: Edit Darwin Cloud Dictionary")),
-          
-          p("Manually Edit Darwin Cloud Dictionary and save before using. Use the pane on right to edit and click below to continue.")          ,
-          
-          
+          p(
+            "Manually Edit Darwin Cloud Dictionary and save before using. 
+            Use the pane on right to edit and click below to continue."
+          )          ,
           div(
             id = ns("queryDatabaseDiv"),
             class = "activeButton",
-            actionButton(ns("queryDatabase"), "Use Edited Dictionary", icon("download"))
+            actionButton(ns("edit_cloud"), "Use Edited Dictionary", icon("download"))
           )
         ),
         
@@ -75,24 +69,23 @@ mod_add_dictionary_ui <- function(id) {
         tabPanel(
           "New",
           div(class = "secondaryHeaders", h3("Option 04: Create a New Dictionary")),
-          
-          p("Create a New Dictionary from Scratch. You have all the control. Create a simple dictionary for your need.")
-          ,
-          
-          
+          p(
+            "Create a New Dictionary from Scratch. You have all the control. Create a simple dictionary for your need."
+          ),
           div(
             id = ns("queryDatabaseDiv"),
             class = "activeButton",
             actionButton(ns("queryDatabase"), "Use New Dictionary", icon("download"))
           )
         ),
-        
         # ------------- End of DB Module -------------------
         
         # ------------- Local Disk Module -------------------
         tabPanel(
           "Upload",
-          div(class = "secondaryHeaders", h3("Option 05: Upload Dictionary From Local Disk")),
+          div(class = "secondaryHeaders", h3(
+            "Option 05: Upload Dictionary From Local Disk"
+          )),
           div(
             id = ns("inputFileDiv"),
             class = "activeButton",
@@ -109,59 +102,35 @@ mod_add_dictionary_ui <- function(id) {
             )
           )
         )
-        
-        # ------------- End of Local Disk Module -------------------
-        
-        
       )
-      
     ),
     
     # ------------- Map / Table Module -------------------
     column(8,
-           # class = "upload_main",
            tabsetPanel(
+             id = ns("editViewTab"),
              type = "tabs",
-             tabPanel("Dictionary View",
-                      h3("Viewing Darwinizing Dictionary"),
-                      DT::dataTableOutput(ns("dictionaryView"))),
-             tabPanel("Edit View",
-                      
-                      
-                      div(class = ns("text"), 
-                          h3("Editing Darwinizing Dictionary"),
-                          actionButton(ns("queryDatabase"), "", icon("save"), class = "activeButton"),
-                          actionButton(ns("queryDatabase"), "", icon("download"), class = "activeButton"),
-                          actionButton(ns("queryDatabase"), "", icon("refresh"), class = "activeButton"),
-                          # HTML(
-                          #   paste(
-                          #     '<textarea id="widgEditor" class="widgEditor">',
-                          #     paste(capture.output(
-                          #       write.table(
-                          #         bdDwC:::data_darwin_cloud$data,
-                          #         sep = '\t',
-                          #         quote = F,
-                          #         row.names = F
-                          #       )
-                          #     ), collapse = "\n "),
-                          #     '</textarea>'
-                          #   )
-                          # )
-                          textAreaInput(
-                            "text",
-                            label = "",
-                            value = paste(capture.output(
-                              write.table(
-                                bdDwC:::data_darwin_cloud$data,
-                                sep = '\t',
-                                quote = F,
-                                row.names = F
-                              )
-                            ), collapse = "\n ")
-                          )
-                          ))
+             tabPanel(
+               title = "Dictionary View",
+               value = "table",
+               h3("Viewing Darwinizing Dictionary"),
+               DT::dataTableOutput(ns("dictionaryView"))
+             ),
+             tabPanel(
+               title = "Edit View",
+               value = "edit",
+               div(
+                 class = ns("text"),
+                 h3("Editing Darwinizing Dictionary"),
+                 actionButton(ns("queryDatabase"), "", icon("save"), class = "activeButton"),
+                 actionButton(ns("queryDatabase"), "", icon("download"), class = "activeButton"),
+                 actionButton(ns("queryDatabase"), "", icon("refresh"), class = "activeButton"),
+                 textAreaInput(ns("edit_text"),
+                               label = "",
+                               value = "")
+               )
+             )
            ))
-    
     # ------------- End of Map/Table Module -------------------
   ))
 }
@@ -172,13 +141,76 @@ mod_add_dictionary_ui <- function(id) {
 #' @export
 #' @keywords internal
 #' @import bdDwC
-mod_add_dictionary_server <- function(input, output, session) {
-  ns <- session$ns
-  
-  output$dictionaryView <- DT::renderDataTable(DT::datatable({
-    bdDwC:::data_darwin_cloud$data
-  }, options = list(scrollX = TRUE)))
-}
+mod_add_dictionary_server <-
+  function(input, output, session, next_button_id = "dataToConfigureDiv") {
+    ns <- session$ns
+    returnData <- data.frame()
+    
+    observeEvent(input$cacheButton, {
+      returnData <<- bdDwC:::data_darwin_cloud$data
+      updateTextInput(session,
+                      "edit_text",
+                      value = bddwc.app::get_edit_string(returnData))
+      
+      shinyjs::runjs(code = paste(
+        '$("#',
+        next_button_id,
+        '").addClass("completedButton");',
+        sep = ""
+      ))
+      shinyjs::runjs(code = paste(
+        '$("#',
+        ns("queryDatabaseDiv"),
+        '").removeClass("activeButton");',
+        sep = ""
+      ))
+    })
+    
+    observeEvent(input$updateCache, {
+      returnData <<- bdDwC::download_cloud_data()
+      updateTextInput(session,
+                      "edit_text",
+                      value = bddwc.app::get_edit_string(returnData))
+      
+      shinyjs::runjs(code = paste(
+        '$("#',
+        next_button_id,
+        '").addClass("completedButton");',
+        sep = ""
+      ))
+      shinyjs::runjs(code = paste(
+        '$("#',
+        ns("queryDatabaseDiv"),
+        '").removeClass("activeButton");',
+        sep = ""
+      ))
+    })
+    
+    observeEvent(input$edit_cloud, {
+      updateTabsetPanel(session, "editViewTab", selected = "edit")
+      updateTextInput(session,
+                      "edit_text",
+                      value = bddwc.app::get_edit_string(returnData))
+    })
+    
+    output$dictionaryView <- DT::renderDataTable({
+      input$cacheButton
+      input$updateCache
+      
+      return(returnData)
+    }, options = list(scrollX = TRUE))
+
+    
+    returnDataReact <- reactive({
+      # Input actions that need to trigger new dataframe return
+      input$inputFile
+      input$queryDatabase
+      returnData
+    })
+    return(returnDataReact)
+  }
+
+
 
 ## To be copied in the UI
 # mod_add_dictionary_ui("add_dictionary_ui_1")

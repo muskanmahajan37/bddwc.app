@@ -24,7 +24,7 @@ mod_darwinizer_ui <- function(id) {
       id = ns("IDE"),
       column(2,  id = "origin", div(
         h4("Original Names", class = "control-header"),
-        p("124", class = "control-header stats-red"),
+        div(class = "control-header stats-red", textOutput(ns("origin_count"))),
         
         DT::dataTableOutput(ns("original"))
       )),
@@ -35,36 +35,36 @@ mod_darwinizer_ui <- function(id) {
       
       #------- CONTROLS --------------
       
-      column(2, div(
+      column(1, div(
         
         div(id = "controls", 
             
-            fluidRow(actionButton(ns("queryDatabase"), "", icon("award"), class = "activeButton shadow ")),
+            fluidRow(actionButton(ns("darwinize"), "Darwinize", icon("award"), class = "activeButton shadow")),
             br(),
-            fluidRow(actionButton(ns("queryDatabase"), "", icon("arrow-circle-right"), class = "readyButton shadow ")),
-            fluidRow(actionButton(ns("queryDatabase"), "", icon("backspace"), class = "readyButton shadow ")),
-            fluidRow(actionButton(ns("queryDatabase"), "", icon("times-circle"), class = "readyButton shadow ")),
+            fluidRow(actionButton(ns("manual"), "", icon("arrow-circle-right"), class = "readyButton shadow")),
+            fluidRow(actionButton(ns("remove"), "", icon("backspace"), class = "readyButton shadow")),
+            fluidRow(actionButton(ns("removeall"), "", icon("times-circle"), class = "readyButton shadow")),
             br(),
-            fluidRow(actionButton(ns("queryDatabase"), "", icon("file-download"), class = "completedButton shadow ")))
+            fluidRow(downloadButton(ns("download"), "", class = "readyButton shadow")))
         
       )),
       
       #------- OUTPUT COLUMNS --------------
       
-      column(6, id = "fixed",
-             column(4, div(
+      column(7, id = "fixed",
+             column(5, div(
                h4("Darwinized Names", class = "control-header"),
-               p("6", class = "control-header stats-green"),
+               div(class = "control-header stats-green", textOutput(ns("darwin_count"))),
                DT::dataTableOutput(ns("darwinized"))
              )),
              column(4, div(
                h4("Manual Renames", class = "control-header"),
-               p("12", class = "control-header stats-green"),
+               div(class = "control-header stats-green", textOutput(ns("manual_count"))),
                DT::dataTableOutput(ns("manual"))
              )),
-             column(4, div(
+             column(3, div(
                h4("Identical Matches", class = "control-header"),
-               p("74", class = "control-header stats-green"),
+               div(class = "control-header stats-green", textOutput(ns("identitical_count"))),
                DT::dataTableOutput(ns("identical"))
              )))
     )
@@ -78,100 +78,241 @@ mod_darwinizer_ui <- function(id) {
 #' @export
 #' @keywords internal
 
-mod_darwinizer_server <- function(input, output, session) {
+mod_darwinizer_server <- function(input, output, session, data_original, dictionary) {
   ns <- session$ns
   
-  output$original <- DT::renderDataTable(
-    DT::datatable(
-      as.data.frame(bdDwC:::data_darwin_cloud$data$fieldname[1:110])
-      ,
-      options = list(
-        paging = FALSE,
-        autoWidth = TRUE,
-        scrollY = TRUE,
-        searching = FALSE,
-        headerCallback = JS(
-          "function(thead, data, start, end, display){",
-          "  $(thead).remove();",
-          "}"
-        )
-      ),
-      filter = 'top',
-      rownames = FALSE,
+  identical <- data.frame()
+  darwinized <- data.frame()
+  manual <- data.frame()
+  names_left <-  reactive(names(data_original))
+  
+  
+  output$origin_count <-
+    renderText({
+      input$darwinize
+      input$manual
+      input$remove
+      input$removeall
+      ifelse(any(class(names_left) == 'reactive'), return(nrow(data_original)), return(length(names_left)))
+    })
+  
+  output$darwin_count <-
+    renderText({
+      input$darwinize
+      input$manual
+      input$remove
+      input$removeall
+      nrow(darwinized)
+    })
+  
+  output$manual_count <-
+    renderText({
+      input$darwinize
+      input$manual
+      input$remove
+      input$removeall
+      nrow(manual)
+    })
+  
+  output$identitical_count <-
+    renderText({
+      input$darwinize
+      input$manual
+      input$remove
+      input$removeall
+      nrow(identical)
+    })
+  
+  
+  #---------- BUTTON --------------
+  
+  observeEvent(input$darwinize, {
+    results <- bdDwC::darwinize_names(
+      as.data.frame(data_original),
+      as.data.frame(dictionary)
     )
+    
+    identical <<- results[results$match_type == "Identical", ]
+    darwinized <<- results[results$match_type == "Darwinized", ]
+    
+    pre_names <- names(data_original)
+    fixed_names <- c(identical$name_old, darwinized$name_old)
+    
+    names_left <<- pre_names[!(pre_names %in% fixed_names)]
+    
+    
+    shinyjs::runjs(code = paste('$("#', ns("darwinize"), '").addClass("readyButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("darwinize"), '").removeClass("activeButton");', sep = ""))
+    
+    shinyjs::runjs(code = paste('$("#', ns("manual"), '").addClass("activeButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("manual"), '").removeClass("readyButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("remove"), '").addClass("activeButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("remove"), '").removeClass("readyButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("removeall"), '").addClass("activeButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("removeall"), '").removeClass("readyButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("download"), '").addClass("completedButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("download"), '").removeClass("readyButton");', sep = ""))
+  })
+  
+  
+  observeEvent(input$manual, {
+    from <- input$original_rows_selected
+    to <- input$dictionary_rows_selected
+    
+    from_name <- names_left[from]
+    to_name <- dictionary[to, 2]
+    
+    manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
+    
+    pre_names <- names_left
+    names_left <<- pre_names[!(pre_names %in% from_name)]
+  })
+  
+  observeEvent(input$download, {
+    result <- data.frame(name_old = identical[,1], name_new = identical[,1])
+    result <- rbind(result, darwinized)
+    result <- rbind(result, manual)
+    
+  })
+  
+  output$download <- shiny::downloadHandler(
+    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
+    content = function(file) {
+      data.table::fwrite(
+        rbind(manual, rbind(darwinized, data.frame(name_old = identical[,1], name_new = identical[,1]))),
+        file
+      )
+    }
   )
   
   
+  observeEvent(input$remove, {
+    darwin_rem <- input$darwinized_rows_selected
+    manual_rem <- input$manual_rows_selected
+    identic_rem <- input$identical_rows_selected
+    
+    if(length(darwin_rem) > 0){
+      names <- darwinized[darwin_rem, 1]
+      darwinized <<- darwinized[!darwin_rem, ]
+      names_left <<- c(names, names_left)
+    }
+    
+    if(length(manual_rem) > 0){
+      names <- as.character(manual[manual_rem, 1])
+      manual <<- manual[c(-1 * manual_rem), ]
+      names_left <<- c(names, names_left)
+    }
+    
+    if(length(identic_rem) > 0){
+    }
+  })
+  
+  
+  observeEvent(input$removeall, {
+    identical <<- data.frame()
+    darwinized <<- data.frame()
+    manual <<- data.frame()
+    
+    names_left <<-  names(data_original)
+  })
+  
+  
+  
+  #----------- TABLES -------------
+  
+  output$original <- DT::renderDataTable(DT::datatable({
+    input$darwinize
+    input$manual
+    input$remove
+    input$removeall
+    
+   if(any(class(names_left) == 'reactive')){
+     as.data.frame(names_left())
+   } else {
+     as.data.frame(names_left)
+   }
+  },
+  options = list(
+    paging = FALSE,
+    autoWidth = TRUE,
+    scrollY = TRUE
+  ),
+  rownames = TRUE,
+  selection = 'single'))
+  
+  
+  
   output$dictionary <- DT::renderDataTable(DT::datatable(
-    as.data.frame(bdDwC:::data_darwin_cloud$data$standard)
-    ,
+    data.frame(standardNames = unique(dictionary[,2:2])),
     options = list(
       paging = FALSE,
       autoWidth = TRUE,
-      scrollY = TRUE,
-      searching = FALSE,
-      headerCallback = JS(
-        "function(thead, data, start, end, display){",
-        "  $(thead).remove();",
-        "}"
-      )
+      scrollY = TRUE
     ),
     rownames = FALSE,
-    filter = 'top'
+    selection = 'single'
   ))
   
-  output$darwinized <- DT::renderDataTable(DT::datatable(
-    as.data.frame(bdDwC:::data_darwin_cloud$data$standard[1:10])
-    ,
+  
+  
+  output$darwinized <- DT::renderDataTable(DT::datatable({
+    input$darwinize
+    input$manual
+    input$remove
+    input$removeall
+    
+    if(length(as.data.frame(identical)) > 0){
+      as.data.frame(darwinized[, 1:2])
+    } else {
+      as.data.frame(darwinized)
+    }
+  },
     options = list(
       paging = FALSE,
       autoWidth = TRUE,
-      scrollY = TRUE,
-      searching = FALSE,
-      headerCallback = JS(
-        "function(thead, data, start, end, display){",
-        "  $(thead).remove();",
-        "}"
-      )
+      scrollY = TRUE
     ),
-    rownames = FALSE,
-    filter = 'top'
+    rownames = FALSE
   ))
   
-  output$manual <- DT::renderDataTable(DT::datatable(
-    as.data.frame(bdDwC:::data_darwin_cloud$data$standard[1:3])
-    ,
+  
+  
+  output$manual <- DT::renderDataTable(DT::datatable({
+    input$darwinize
+    input$manual
+    input$remove
+    input$removeall
+    
+    as.data.frame(manual)
+  },
     options = list(
       paging = FALSE,
       autoWidth = TRUE,
-      scrollY = TRUE,
-      searching = FALSE,
-      headerCallback = JS(
-        "function(thead, data, start, end, display){",
-        "  $(thead).remove();",
-        "}"
-      )
+      scrollY = TRUE
     ),
-    rownames = FALSE,
-    filter = 'top'
+    rownames = FALSE
   ))
   
-  output$identical <- DT::renderDataTable(DT::datatable(
-    as.data.frame(bdDwC:::data_darwin_cloud$data$standard[1:70])
-    ,
+  
+  
+  output$identical <- DT::renderDataTable(DT::datatable({
+    input$darwinize
+    input$manual
+    input$remove
+    input$removeall
+    
+    if(length(as.data.frame(identical)) > 0){
+      data.frame(name_same = identical[, 2:2])
+    } else {
+      as.data.frame(identical)
+    }
+  },
     options = list(
       paging = FALSE,
       autoWidth = TRUE,
-      scrollY = TRUE,
-      searching = FALSE,
-      headerCallback = JS(
-        "function(thead, data, start, end, display){",
-        "  $(thead).remove();",
-        "}"
-      )
+      scrollY = TRUE
     ),
-    rownames = FALSE,
-    filter = 'top'
+    rownames = FALSE
   ))
 }
 

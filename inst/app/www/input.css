@@ -18,18 +18,18 @@
 }
 
 
-#controls .btn{
+ #controls .btn{
     margin: 10px 10px 10px 10px;
-    width: 50px;
+    width: 100px;
 }
 
 #controls .readyButton{
-    background-color: orange;
-        color: #fff;
+    background-color: transparent;
+    color: #000;
 }
 
 #controls .activeButton{
-    background-color: orange;
+    background-color: #795548;
     color: #fff;
 }
 
@@ -37,3 +37,5 @@
     background-color: green;
     color: white
 }
+
+
