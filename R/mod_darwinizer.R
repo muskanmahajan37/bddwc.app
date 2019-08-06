@@ -93,7 +93,9 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
       input$manual
       input$remove
       input$removeall
-      ifelse(any(class(names_left) == 'reactive'), return(nrow(data_original)), return(length(names_left)))
+      print(class(names_left))
+      print(nrow(data_original))
+      ifelse(any(class(names_left) == 'reactive'), return(length(data_original)), return(length(names_left)))
     })
   
   output$darwin_count <-
@@ -159,16 +161,23 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     from <- input$original_rows_selected
     to <- input$dictionary_rows_selected
     
-    from_name <- names_left[from]
-    to_name <- dictionary[to, 2]
+    if(is.null(from) || is.null(to)){
+      showNotification("Select a row each from two tables on the left to manually rename.",
+                       duration = 6) 
+    } else {
+      from_name <- names_left[from]
+      to_name <- dictionary[to, 2]
+      
+      manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
+      
+      pre_names <- names_left
+      names_left <<- pre_names[!(pre_names %in% from_name)]
+    }
     
-    manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
     
-    pre_names <- names_left
-    names_left <<- pre_names[!(pre_names %in% from_name)]
   })
   
-  observeEvent(input$download, {
+  observeEvent(input$download, {x
     result <- data.frame(name_old = identical[,1], name_new = identical[,1])
     result <- rbind(result, darwinized)
     result <- rbind(result, manual)
@@ -204,6 +213,9 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     }
     
     if(length(identic_rem) > 0){
+      names <- as.character(identical[identic_rem, 1])
+      identical <<- identical[c(-1 * identic_rem), ]
+      names_left <<- c(names, names_left)
     }
   })
   

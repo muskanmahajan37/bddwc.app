@@ -92,15 +92,12 @@ mod_add_dictionary_ui <- function(id) {
             class = "activeButton",
             fileInput(
               ns("inputFile"),
-              label = h3("CSV / DWCA ZIP file input"),
+              label = h3("CSV Dictionary input"),
               accept = c(
-                "text/csv",
-                "text/comma-separated-values,text/plain",
-                ".csv",
-                ".zip",
-                "application/zip"
+                ".csv"
               )
-            )
+            ),
+            helpText("The file should have headers 'fieldname' and 'standard'.")
           )
         )
       )
@@ -217,6 +214,10 @@ mod_add_dictionary_server <-
         sep = ""
       ))
     })
+    
+    observeEvent(input$inputFile, {
+      returnData <<- read.csv(input$inputFile$datapath)
+    })
       
     observeEvent(input$addDictPanel, {
       if(input$addDictPanel == "Edit"){
@@ -271,8 +272,7 @@ mod_add_dictionary_server <-
       input$cacheButton
       input$updateCache
       input$edit_cloud
-      
-      print("sadf")
+      input$inputFile
       
       
       returnData
