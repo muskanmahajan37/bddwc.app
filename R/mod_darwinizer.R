@@ -44,8 +44,14 @@ mod_darwinizer_ui <- function(id) {
             fluidRow(actionButton(ns("manual"), "", icon("arrow-circle-right"), class = "readyButton shadow")),
             fluidRow(actionButton(ns("remove"), "", icon("backspace"), class = "readyButton shadow")),
             fluidRow(actionButton(ns("removeall"), "", icon("times-circle"), class = "readyButton shadow")),
+            
+            br(),
+            fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow")),
+        
             br(),
             fluidRow(downloadButton(ns("download"), "", class = "readyButton shadow")))
+        
+        
         
       )),
       
@@ -93,8 +99,6 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
       input$manual
       input$remove
       input$removeall
-      print(class(names_left))
-      print(nrow(data_original))
       ifelse(any(class(names_left) == 'reactive'), return(length(data_original)), return(length(names_left)))
     })
   
@@ -152,8 +156,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     shinyjs::runjs(code = paste('$("#', ns("remove"), '").removeClass("readyButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("removeall"), '").addClass("activeButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("removeall"), '").removeClass("readyButton");', sep = ""))
-    shinyjs::runjs(code = paste('$("#', ns("download"), '").addClass("completedButton");', sep = ""))
-    shinyjs::runjs(code = paste('$("#', ns("download"), '").removeClass("readyButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("downloadData"), '").addClass("completedButton");', sep = ""))
+    shinyjs::runjs(code = paste('$("#', ns("downloadData"), '").removeClass("readyButton");', sep = ""))
   })
   
   
@@ -166,18 +170,16 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
                        duration = 6) 
     } else {
       from_name <- names_left[from]
-      to_name <- dictionary[to, 2]
+      to_name <- unique(dictionary$standard)[to]
       
       manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
       
       pre_names <- names_left
       names_left <<- pre_names[!(pre_names %in% from_name)]
     }
-    
-    
   })
   
-  observeEvent(input$download, {x
+  observeEvent(input$download, {
     result <- data.frame(name_old = identical[,1], name_new = identical[,1])
     result <- rbind(result, darwinized)
     result <- rbind(result, manual)
@@ -185,12 +187,25 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
   })
   
   output$download <- shiny::downloadHandler(
-    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
+    filename = format(Sys.time(), "manualDictionary_%Y_%b_%d.csv"),
     content = function(file) {
       data.table::fwrite(
         rbind(manual, rbind(darwinized, data.frame(name_old = identical[,1], name_new = identical[,1]))),
         file
       )
+    }
+  )
+  
+  output$downloadData <- shiny::downloadHandler(
+    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
+    content = function(file) {
+      dat <- data.frame(
+        name_old = c(identical[, 1], darwinized[, 1], manual[, 1]),
+        name_new = c(identical[, 1], darwinized[, 1], manual[, 1])
+      )
+      dat[,] <- lapply(dat, function(x) {as.character(x)})
+      write.csv(bdDwC::rename_user_data(as.data.frame(data_original), dat),
+                file)
     }
   )
   
@@ -254,8 +269,13 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
   
   
   
-  output$dictionary <- DT::renderDataTable(DT::datatable(
-    data.frame(standardNames = unique(dictionary[,2:2])),
+  output$dictionary <- DT::renderDataTable(DT::datatable({
+    input$darwinize
+    input$manual
+    input$remove
+    input$removeall
+    data.frame(standardNames = unique(dictionary[,2:2])) 
+  },
     options = list(
       paging = FALSE,
       autoWidth = TRUE,
