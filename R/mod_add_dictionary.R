@@ -190,7 +190,7 @@ mod_add_dictionary_server <-
       updateTabsetPanel(session, "editViewTab", selected = "edit")
       updateTextInput(session,
                       "edit_text",
-                      value = bddwc.app::get_edit_string(returnData))
+                      value = bddwc.app::get_edit_string(bdDwC:::data_darwin_cloud$data))
     })
     
     output$dictionaryView <- DT::renderDataTable({

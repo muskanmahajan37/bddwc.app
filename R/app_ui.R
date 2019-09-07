@@ -69,17 +69,9 @@ golem_add_external_resources <- function() {
   tags$head(
     golem::js(),
     golem::favicon(),
-    # Add here all the external resources
-    # If you have a custom.css in the inst/app/www
-    # Or for example, you can add shinyalert::useShinyalert() here
     shinyjs::useShinyjs(),
+    
     tags$link(rel = "stylesheet", type = "text/css", href = "www/input.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "www/style.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "www/widgEditor.css"),
-    
-    tags$script(src = "www/script.js"),
-    tags$script(src = "www/widgEditor.js")
-    
-    
+    tags$link(rel = "stylesheet", type = "text/css", href = "www/style.css")
   )
 }
