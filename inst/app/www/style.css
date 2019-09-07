@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito+Sans");
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+
+body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.shiny-notification{
+    position: fixed;
+    top: 33%;
+    left: 33%;
+    right: 33%;
+    opacity: 1;
+}
+
+#shiny-notification-panel .progress-bar{
+    background-color: #795548
+}
+
+.secondaryHeaders, a{
+    color: #795548;
+}   
+
+
+.skin-blue .main-header .navbar {
+   background-color: #795548;
+}
+
+.skin-blue .main-header .logo {
+     background-color: #795548;
+}
+
+.skin-blue .main-header .logo:hover {
+     background-color: #795548;
+}
+
+.skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
+    border-left-color: #795548;
+}
+
+
+.bdDictionaryInput-text .shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+    height: 600px;
+}
+
+
+.bdDictionaryInput-text textarea.form-control {
+    height: 100%;
+}
+
+
+.bdDictionaryInput-text .form-control {
+    font-family: Consolas,monaco,monospace;
+    padding: 12px 18px;
+    border: 1px #795548;
+}
+
+#bdDarwinizer-IDE {
+  overflow-x: hidden !important;
+    font-size: 11px;
+    line-height: .8;
+}
+
+#bdDarwinizer-IDE .dataTables_scrollBody {
+  overflow-x: hidden !important;
+}
+
+#origin {
+  padding-bottom: 30px;
+        border: 2px solid crimson;
+}
+
+#fixed {
+  padding-bottom: 30px;
+        border: 2px solid #00a65a;
+}
+
+#controls{
+  position: fixed;
+  
+    margin-top: 10%;
+}
+
+.control-header{
+    text-align: center;
+}
+
+#controls {
+    text-align: center;
+}
+
+.dataTables_info {
+  text-align: center;
+  float: none !important;
+}
+
+#controls .button {
+    position: absolute;
+}
+
+#controls button {
+    box-shadow: 0 4px 8px 0 #ff9c0036, 0 6px 20px 0 #ff9c002e;
+}
+
+.stats-red{
+    font-size: 60px;
+    color: crimson;
+    font-family: 'Roboto Slab', serif;
+}
+
+.stats-green{
+    font-size: 60px;
+    color: #00a65a;
+    font-family: 'Roboto Slab', serif;
+}
+
+.dataTables_scrollBody {
+  max-height: 70vh;
+}
+
+
+
+#bdDarwinizer-IDE ::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+#bdDarwinizer-IDE ::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+
+
+
+#bdDarwinizer-IDE ::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: transparent;
+	background-color: transparent;
+}
+
+#bdDarwinizer-IDE ::-webkit-scrollbar
+{
+	width: 5px;
+	height: 5px;
+	background-color: transparent;
+}
+
+#bdDarwinizer-IDE ::-webkit-scrollbar-thumb
+{
+	background-color: #795548;	
+	background-image: -webkit-linear-gradient(45deg,
+	                                          rgba(255, 255, 255, .2) 25%,
+											  transparent 25%,
+											  transparent 50%,
+											  rgba(255, 255, 255, .2) 50%,
+											  rgba(255, 255, 255, .2) 75%,
+											  transparent 75%,
+											  transparent)
+}
+
+
+#dictionaryToDarwinDiv{
+    margin-left: 15px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    float: none !important;
+    text-align: center !important;
+}
+
+.dataTables_wrapper {
+    margin-top: 20px;
+    
+}
+
+#bdDarwinizer-dictionary{
+    margin-top: 80px;
+}
+
+.shiny-notification {
+    background-color: #795548;
+    color: #fff;
+    opacity: 1;
+}
