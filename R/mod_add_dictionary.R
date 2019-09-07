@@ -199,13 +199,10 @@ mod_add_dictionary_server <-
     # input$edit_cloud
     
     observeEvent(input$edit_cloud, {
-<<<<<<< HEAD
       updateTabsetPanel(session, "editViewTab", selected = "edit")
       updateTextInput(session,
                       "edit_text",
                       value = bddwc.app::get_edit_string(bdDwC:::data_darwin_cloud$data))
-=======
-      returnData <<- editingData
       
       shinyjs::runjs(code = paste(
         '$("#',
@@ -233,7 +230,6 @@ mod_add_dictionary_server <-
                         "edit_text",
                         value = bddwc.app::get_edit_string(editingData))
       }
->>>>>>> 146750775ff9d096edb1d4c402844419e226e756
     })
     
     output$dictionaryView <- DT::renderDataTable({
