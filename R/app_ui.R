@@ -18,7 +18,10 @@ app_ui <- function() {
         ),
         menuItem("Darwinize",
                  tabName = "darwinize",
-                 icon = icon("blocks"))
+                 icon = icon("file-csv")),
+        menuItem("Cite Us",
+                 tabName = "citation",
+                 icon = icon("copyright"))
       )),
       
       dashboardBody(
@@ -55,6 +58,11 @@ app_ui <- function() {
           tabItem("darwinize",
                   fluidRow(div(
                     mod_darwinizer_ui("bdDarwinizer")
+                  ))),
+          
+          tabItem("citation",
+                  fluidRow(div(
+                    mod_citation_ui("citation_ui_1")
                   )))
         )
       )
@@ -67,7 +75,7 @@ golem_add_external_resources <- function() {
   addResourcePath('www', system.file('app/www', package = 'bddwc.app'))
   
   tags$head(
-    golem::js(),
+    # golem::js(),
     golem::favicon(),
     shinyjs::useShinyjs(),
     
