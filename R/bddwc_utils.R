@@ -5,7 +5,6 @@
 #'
 #' @param data biodiversity dataframe
 #'
-#'
 #' @keywords internal
 #' @export
 summarizeDataframe <- function(data) {
@@ -52,6 +51,8 @@ summarizeDataframe <- function(data) {
 #' @description  Summary table function.
 #'
 #' @param data biodiversity dataframe
+#' 
+#' @importFrom utils capture.output write.table
 #'
 #' @keywords internal
 #' @export

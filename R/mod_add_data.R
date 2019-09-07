@@ -318,10 +318,3 @@ mod_add_data_server <- function(input, output, session, next_button_id = "dataTo
   
   return(returnDataReact)
 }
-
-## To be copied in the UI
-# mod_add_data_ui("add_data_ui_1")
-
-## To be copied in the server
-# callModule(mod_add_data_server, "add_data_ui_1")
-
