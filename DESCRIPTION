@@ -1,7 +1,7 @@
 Package: bddwc.app
 Title: A User-Friendly Graphical Interface for Darwinizing Biodiversity Datasets
-Version: 0.0.2
-Date: 2019-09-07
+Version: 0.0.3
+Date: 2019-09-24
 Authors@R: c(
     person(
         "Thiloshon", "Nagarajah",
