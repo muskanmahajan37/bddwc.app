@@ -1,4 +1,4 @@
-#' @import shiny shinydashboard
+#' @import shiny shinydashboard bdutilities.app
 app_ui <- function() {
   tagList(# List the first level UI elements here
     dashboardPage(

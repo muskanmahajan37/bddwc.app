@@ -121,7 +121,7 @@ mod_add_dictionary_ui <- function(id) {
 #' @rdname mod_add_dictionary
 #' @export
 #' @keywords internal
-#' @import bdDwC
+#' @import bdDwC DT
 mod_add_dictionary_server <-
   function(input, output, session, next_button_id = "dataToConfigureDiv") {
     ns <- session$ns
@@ -235,12 +235,12 @@ mod_add_dictionary_server <-
     }, options = list(scrollX = TRUE), editable = TRUE)
     
     
-    proxy = dataTableProxy('dictionaryEditView')
+    proxy <- dataTableProxy('dictionaryEditView')
     observeEvent(input$dictionaryEditView_cell_edit, {
-      info = input$dictionaryEditView_cell_edit
-      i = info$row
-      j = info$col
-      v = info$value
+      info <- input$dictionaryEditView_cell_edit
+      i <- info$row
+      j <- info$col
+      v <- info$value
       editingData[i, j] <<- DT::coerceValue(v, editingData[i, j])
       replaceData(proxy, editingData, resetPaging = FALSE)
       updateTextInput(session,
