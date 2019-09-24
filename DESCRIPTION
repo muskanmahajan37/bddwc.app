@@ -34,17 +34,15 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     DT,
+    bdutilities.app,
     bdDwC,
     data.table,
-    finch,
     glue,
     htmltools,
     leaflet,
-    rgbif,
     shiny,
     shinydashboard,
-    shinyjs,
-    spocc
+    shinyjs
 RoxygenNote: 6.1.1
 URL: https://github.com/bd-R/bddwc.app
 BugReports: https://github.com/bd-R/bddwc.app/issues
