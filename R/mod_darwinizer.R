@@ -49,7 +49,7 @@ mod_darwinizer_ui <- function(id) {
             fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow")),
         
             br(),
-            fluidRow(downloadButton(ns("download"), "", class = "readyButton shadow")))
+            fluidRow(downloadButton(ns("downloadDictionary"), "", class = "readyButton shadow")))
         
         
         
@@ -74,7 +74,7 @@ mod_darwinizer_ui <- function(id) {
                DT::dataTableOutput(ns("identical"))
              )))
     )
-    #------- END OF OUTPUT COLUMNS --------------
+    #------- END OF COLUMNS --------------
   ))
 }
 
@@ -83,15 +83,17 @@ mod_darwinizer_ui <- function(id) {
 #' @rdname mod_darwinizer
 #' @export
 #' @keywords internal
-
-mod_darwinizer_server <- function(input, output, session, data_original, dictionary) {
+#' @importFrom utils write.csv
+mod_darwinizer_server <- function(input, output, session, data_original, darwin_dictionary) {
   ns <- session$ns
   
   identical <- data.frame()
   darwinized <- data.frame()
   manual <- data.frame()
   names_left <-  reactive(names(data_original))
+  is_darwinized <- FALSE
   
+  #------- BIG FAT NUMBERS --------------
   
   output$origin_count <-
     renderText({
@@ -129,13 +131,14 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
       nrow(identical)
     })
   
+  #------- BIG FAT NUMBERS --------------
   
   #---------- BUTTON --------------
   
   observeEvent(input$darwinize, {
     results <- bdDwC::darwinize_names(
       as.data.frame(data_original),
-      as.data.frame(dictionary)
+      as.data.frame(darwin_dictionary())
     )
     
     identical <<- results[results$match_type == "Identical", ]
@@ -158,10 +161,19 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     shinyjs::runjs(code = paste('$("#', ns("removeall"), '").removeClass("readyButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("downloadData"), '").addClass("completedButton");', sep = ""))
     shinyjs::runjs(code = paste('$("#', ns("downloadData"), '").removeClass("readyButton");', sep = ""))
+    
+    is_darwinized <<- TRUE
   })
   
   
   observeEvent(input$manual, {
+    
+    if(!is_darwinized){
+      showNotification("Please Darwinize First",
+                       duration = 6) 
+      return()
+    }
+    
     from <- input$original_rows_selected
     to <- input$dictionary_rows_selected
     
@@ -170,7 +182,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
                        duration = 6) 
     } else {
       from_name <- names_left[from]
-      to_name <- unique(dictionary$standard)[to]
+      to_name <- unique(darwin_dictionary()$standard)[to]
       
       manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
       
@@ -179,38 +191,13 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     }
   })
   
-  observeEvent(input$download, {
-    result <- data.frame(name_old = identical[,1], name_new = identical[,1])
-    result <- rbind(result, darwinized)
-    result <- rbind(result, manual)
-    
-  })
-  
-  output$download <- shiny::downloadHandler(
-    filename = format(Sys.time(), "manualDictionary_%Y_%b_%d.csv"),
-    content = function(file) {
-      data.table::fwrite(
-        rbind(manual, rbind(darwinized, data.frame(name_old = identical[,1], name_new = identical[,1]))),
-        file
-      )
-    }
-  )
-  
-  output$downloadData <- shiny::downloadHandler(
-    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
-    content = function(file) {
-      dat <- data.frame(
-        name_old = c(identical[, 1], darwinized[, 1], manual[, 1]),
-        name_new = c(identical[, 1], darwinized[, 1], manual[, 1])
-      )
-      dat[,] <- lapply(dat, function(x) {as.character(x)})
-      write.csv(bdDwC::rename_user_data(as.data.frame(data_original), dat),
-                file)
-    }
-  )
-  
-  
   observeEvent(input$remove, {
+    if(!is_darwinized){
+      showNotification("Please Darwinize First",
+                       duration = 6) 
+      return()
+    }
+    
     darwin_rem <- input$darwinized_rows_selected
     manual_rem <- input$manual_rows_selected
     identic_rem <- input$identical_rows_selected
@@ -236,6 +223,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
   
   
   observeEvent(input$removeall, {
+    if(!is_darwinized){
+      showNotification("Please Darwinize First",
+                       duration = 6) 
+      return()
+    }
+    
     identical <<- data.frame()
     darwinized <<- data.frame()
     manual <<- data.frame()
@@ -243,7 +236,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     names_left <<-  names(data_original)
   })
   
-  
+  #---------- BUTTON --------------
   
   #----------- TABLES -------------
   
@@ -268,13 +261,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
   selection = 'single'))
   
   
-  
   output$dictionary <- DT::renderDataTable(DT::datatable({
     input$darwinize
     input$manual
     input$remove
     input$removeall
-    data.frame(standardNames = unique(dictionary[,2:2])) 
+    data.frame(standardNames = unique(darwin_dictionary()[,2:2])) 
   },
     options = list(
       paging = FALSE,
@@ -284,7 +276,6 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     rownames = FALSE,
     selection = 'single'
   ))
-  
   
   
   output$darwinized <- DT::renderDataTable(DT::datatable({
@@ -308,7 +299,6 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
   ))
   
   
-  
   output$manual <- DT::renderDataTable(DT::datatable({
     input$darwinize
     input$manual
@@ -324,7 +314,6 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     ),
     rownames = FALSE
   ))
-  
   
   
   output$identical <- DT::renderDataTable(DT::datatable({
@@ -346,14 +335,66 @@ mod_darwinizer_server <- function(input, output, session, data_original, diction
     ),
     rownames = FALSE
   ))
+
+
+#----------- TABLES -------------
+
+#----------- DOWNLOAD HANDLERS -------------
+  
+  
+  output$downloadDictionary <- shiny::downloadHandler(
+    filename = format(Sys.time(), "manualDictionary_%Y_%b_%d.csv"),
+    content = function(file) {
+      if(!is_darwinized){
+        showNotification("Please Darwinize First",
+                         duration = 6) 
+        return()
+      }
+      
+      df <- data.frame(name_old = "dummy", name_new = "dummy")
+      
+      if (nrow(identical) != 0)
+        df <- rbind(df, data.frame(name_old = identical[, 1], name_new = identical[, 1]))
+      
+      if (nrow(manual) != 0)
+        df <- rbind(df, manual)
+      
+      if (nrow(darwinized) != 0)
+        df <- rbind(df, darwinized)
+      
+      # removing dummy row
+      df <- df[-c(1),]
+      
+      data.table::fwrite(df, file)
+    }
+  )
+  
+  output$downloadData <- shiny::downloadHandler(
+    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
+    content = function(file) {
+      if(!is_darwinized){
+        showNotification("Please Darwinize First",
+                         duration = 6) 
+        return()
+      }
+      
+      manual[, ] <- lapply(manual, function(x) {
+        as.character(x)
+      })
+      
+      dat <- data.frame(
+        name_old = c(identical[, 1], darwinized$name_old, manual$name_old),
+        name_new = c(identical[, 1], darwinized$name_new, manual$name_new)
+      )
+      dat[, ] <- lapply(dat, function(x) {
+        as.character(x)
+      })
+      
+      write.csv(bdDwC::rename_user_data(as.data.frame(data_original), dat),
+                file)
+    }
+  )
+
+#----------- DOWNLOAD HANDLERS -------------
+
 }
-
-
-
-
-
-## To be copied in the UI
-# mod_darwinizer_ui("darwinizer_ui_1")
-
-## To be copied in the server
-# callModule(mod_darwinizer_server, "darwinizer_ui_1")

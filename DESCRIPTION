@@ -1,28 +1,48 @@
 Package: bddwc.app
-Title: Graphical User Interface for Darwinizing Biodiversity Datasets
-Version: 0.0.2
+Title: A User-Friendly Graphical Interface for Darwinizing Biodiversity Datasets
+Version: 0.0.4
 Date: 2019-09-30
-Authors@R: person('Thiloshon', 'Nagarajah', email = 'thiloshon@gmail.com', role = c('cre', 'aut'))
+Authors@R: c(
+    person(
+        "Thiloshon", "Nagarajah",
+        email = "thiloshon@gmail.com",
+        role = c("aut","cre")),
+    person(
+        "Tomer", "Gueta", 
+        email = "tomer.gu@gmail.com",
+        role = c("aut"),
+        comment = c(ORCID = '0000-0003-1557-8596')),
+    person(
+        "Vijay", "Barve", ,
+        email = "vijay.barve@gmail.com", 
+        role = c("aut"),
+        comment = c(ORCID = '0000-0002-4852-2567')),
+    person(
+        "Povilas", "Gibas",
+        email = "povilasgibas@gmail.com",
+        role = c("aut"),
+        comment = c(ORCID = '0000-0001-5311-6021')),
+    person(
+        "Yohay", "Carmel",
+        email = "yohay@cv.technion.ac.il",
+        role = c("aut"),
+        comment = c(ORCID = '0000-0002-5883-0184'))
+    )
 Description: Standardizing biodiversity datasets with DWCA Terms Standard Names.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    shiny,
-    golem,
     DT,
-    attempt,
+    bdutilities.app,
+    bdDwC,
+    data.table,
     glue,
     htmltools,
-    rgbif,
-    rstudioapi,
-    spocc,
-    data.table,
-    shinyjs,
-    bdDwC,
-    leaflet
-Remotes: 
-    Thinkr-open/golem
+    leaflet,
+    shiny,
+    shinydashboard,
+    shinyjs
 RoxygenNote: 6.1.1
 URL: https://github.com/bd-R/bddwc.app
 BugReports: https://github.com/bd-R/bddwc.app/issues
