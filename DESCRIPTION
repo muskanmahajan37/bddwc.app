@@ -1,6 +1,7 @@
 Package: bddwc.app
 Title: Graphical User Interface for Darwinizing Biodiversity Datasets
-Version: 0.0.1.13
+Version: 0.0.2
+Date: 2019-09-30
 Authors@R: person('Thiloshon', 'Nagarajah', email = 'thiloshon@gmail.com', role = c('cre', 'aut'))
 Description: Standardizing biodiversity datasets with DWCA Terms Standard Names.
 License: GPL-3
