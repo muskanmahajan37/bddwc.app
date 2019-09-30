@@ -32,7 +32,7 @@ app_ui <- function() {
           # ------------- Add Data Module -------------------
           tabItem("add",
                   fluidRow(
-                    div(mod_add_data_ui("bdFileInput")),
+                    div(bdutilities.app::mod_add_data_ui("bdFileInput")),
                     
                     column(12,
                            div(
@@ -62,7 +62,7 @@ app_ui <- function() {
           
           tabItem("citation",
                   fluidRow(div(
-                    mod_citation_ui("citation_ui_1")
+                    bdutilities.app::mod_citation_ui("citation_ui_1", "bddwc.app")
                   )))
         )
       )
