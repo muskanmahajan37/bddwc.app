@@ -38,8 +38,12 @@ Imports:
     shiny,
     shinydashboard,
     shinyjs,
-    utils
-Remotes: bd-R/bdDwC, bd-R/bdutilities.app
+    utils,
+    bdDwC (>= 0.1.5),
+    bdutilities.app (>= 0.0.1)
+Remotes: 
+    bd-R/bdDwC, 
+    bd-R/bdutilities.app
 RoxygenNote: 6.1.1
 URL: https://github.com/bd-R/bddwc.app
 BugReports: https://github.com/bd-R/bddwc.app/issues
