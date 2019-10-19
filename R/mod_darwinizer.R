@@ -148,10 +148,11 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     
     pre_names <- names(data_original())
     fixed_names <- c(identical$name_old, darwinized$name_old)
+    fixed_standards <- c(identical$name_old, darwinized$name_new)
     
     names_left <<- pre_names[!(pre_names %in% fixed_names)]
     darwin_dictionary_unique <<- return_core(darwin_dictionary_unique)
-    darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% fixed_names)]
+    darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% fixed_standards)]
     
     
     shinyjs::runjs(code = paste('$("#', ns("darwinize"), '").addClass("readyButton");', sep = ""))
@@ -209,12 +210,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     
     if(length(darwin_rem) > 0){
       names <- darwinized[darwin_rem, 1]
-      names_left <<- c(names, names_left)
       
       names_darwin <- darwinized[darwin_rem, 2]
       darwin_dictionary_unique <<- c(names_darwin, darwin_dictionary_unique)
       
-      darwinized <<- darwinized[!darwin_rem, ]
+      darwinized <<- darwinized[c(-1 * darwin_rem), ]
+      names_left <<- c(names, names_left)
     }
     
     if(length(manual_rem) > 0){
