@@ -1,47 +1,24 @@
+# bdDwC.app
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+Darwinazing biodiversity data in R.
 
-# bddwc.app
+"Darwin Core is a standard maintained by the Darwin Core maintenance group. It includes a glossary of terms intended to facilitate the sharing of information about biological diversity by providing identifiers, labels, and definitions." [Darwin Core](https://github.com/tdwg/dwc)
 
-The goal of bddwc.app is to …
+`bddwc.app` is an shiny UI extension of bdDwC package that user can use to Darwinize given dataset. This package is part of [`bdverse`](https://bdverse.org) and has a colsole interface implemented in [`bdDwC`](https://github.com/bd-R/bdDwC).
 
-## Installation
 
-You can install the released version of bddwc.app from
-[CRAN](https://CRAN.R-project.org) with:
+---
 
-``` r
-install.packages("bddwc.app")
-```
+Install `bddwc.app` with: 
 
-## Example
+    devtools::install_github("bd-R/bddwc.app")
 
-This is a basic example which shows you how to solve a common problem:
+---
 
-``` r
-## basic example code
-```
+To use `bddwc.app`, load `bdDwC` package with:
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+    library(bddwc.app)
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+and to run the shiny app with:
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
+    bddwc_app()

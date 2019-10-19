@@ -20,7 +20,7 @@ app_server <- function(input, output, session) {
   
   callModule(mod_darwinizer_server,
              "bdDarwinizer",
-             data_store$data_user(), data_store$dictionary)
+             data_store$data_user, data_store$dictionary)
   
   callModule(bdutilities.app::mod_citation_server, "citation_ui_1", "bddwc.app")
   #------------- Modules --------------

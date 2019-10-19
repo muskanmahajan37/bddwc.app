@@ -47,7 +47,7 @@ mod_darwinizer_ui <- function(id) {
             
             br(),
             fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow")),
-        
+            
             br(),
             fluidRow(downloadButton(ns("downloadDictionary"), "", class = "readyButton shadow")))
         
@@ -87,10 +87,12 @@ mod_darwinizer_ui <- function(id) {
 mod_darwinizer_server <- function(input, output, session, data_original, darwin_dictionary) {
   ns <- session$ns
   
+  # data_original <- shiny::observe(data_original_temp)
   identical <- data.frame()
   darwinized <- data.frame()
   manual <- data.frame()
-  names_left <-  reactive(names(data_original))
+  names_left <-  reactive(names(data_original()))
+  darwin_dictionary_unique <- reactive(unique(darwin_dictionary()$standard))
   is_darwinized <- FALSE
   
   #------- BIG FAT NUMBERS --------------
@@ -101,7 +103,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       input$manual
       input$remove
       input$removeall
-      ifelse(any(class(names_left) == 'reactive'), return(length(data_original)), return(length(names_left)))
+      ifelse(any(class(names_left) == 'reactive'), return(length(data_original())), return(length(names_left)))
     })
   
   output$darwin_count <-
@@ -137,17 +139,19 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
   
   observeEvent(input$darwinize, {
     results <- bdDwC::darwinize_names(
-      as.data.frame(data_original),
+      as.data.frame(data_original()),
       as.data.frame(darwin_dictionary())
     )
     
     identical <<- results[results$match_type == "Identical", ]
     darwinized <<- results[results$match_type == "Darwinized", ]
     
-    pre_names <- names(data_original)
+    pre_names <- names(data_original())
     fixed_names <- c(identical$name_old, darwinized$name_old)
     
     names_left <<- pre_names[!(pre_names %in% fixed_names)]
+    darwin_dictionary_unique <<- return_core(darwin_dictionary_unique)
+    darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% fixed_names)]
     
     
     shinyjs::runjs(code = paste('$("#', ns("darwinize"), '").addClass("readyButton");', sep = ""))
@@ -182,12 +186,13 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
                        duration = 6) 
     } else {
       from_name <- names_left[from]
-      to_name <- unique(darwin_dictionary()$standard)[to]
+      to_name <- darwin_dictionary_unique[to]
       
       manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
       
       pre_names <- names_left
       names_left <<- pre_names[!(pre_names %in% from_name)]
+      darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% to_name)]
     }
   })
   
@@ -204,18 +209,31 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     
     if(length(darwin_rem) > 0){
       names <- darwinized[darwin_rem, 1]
-      darwinized <<- darwinized[!darwin_rem, ]
       names_left <<- c(names, names_left)
+      
+      names_darwin <- darwinized[darwin_rem, 2]
+      darwin_dictionary_unique <<- c(names_darwin, darwin_dictionary_unique)
+      
+      darwinized <<- darwinized[!darwin_rem, ]
     }
     
     if(length(manual_rem) > 0){
       names <- as.character(manual[manual_rem, 1])
+      
+      names_darwin <- as.character(manual[manual_rem, 2])
+      darwin_dictionary_unique <<- c(names_darwin, darwin_dictionary_unique)
+      
       manual <<- manual[c(-1 * manual_rem), ]
       names_left <<- c(names, names_left)
     }
     
     if(length(identic_rem) > 0){
       names <- as.character(identical[identic_rem, 1])
+      
+      names_darwin <- as.character(identical[identic_rem, 2])
+      darwin_dictionary_unique <<- c(names_darwin, darwin_dictionary_unique)
+      
+      
       identical <<- identical[c(-1 * identic_rem), ]
       names_left <<- c(names, names_left)
     }
@@ -233,7 +251,9 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     darwinized <<- data.frame()
     manual <<- data.frame()
     
-    names_left <<-  names(data_original)
+    names_left <<-  names(data_original())
+    darwin_dictionary_unique <<- unique(darwin_dictionary()$standard)
+    
   })
   
   #---------- BUTTON --------------
@@ -246,11 +266,11 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$remove
     input$removeall
     
-   if(any(class(names_left) == 'reactive')){
-     as.data.frame(names_left())
-   } else {
-     as.data.frame(names_left)
-   }
+    if(any(class(names_left) == 'reactive')){
+      as.data.frame(names_left())
+    } else {
+      as.data.frame(names_left)
+    }
   },
   options = list(
     paging = FALSE,
@@ -266,15 +286,15 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$manual
     input$remove
     input$removeall
-    data.frame(standardNames = unique(darwin_dictionary()[,2:2])) 
+    data.frame(standardNames = return_core(darwin_dictionary_unique))
   },
-    options = list(
-      paging = FALSE,
-      autoWidth = TRUE,
-      scrollY = TRUE
-    ),
-    rownames = FALSE,
-    selection = 'single'
+  options = list(
+    paging = FALSE,
+    autoWidth = TRUE,
+    scrollY = TRUE
+  ),
+  rownames = FALSE,
+  selection = 'single'
   ))
   
   
@@ -290,12 +310,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       as.data.frame(darwinized)
     }
   },
-    options = list(
-      paging = FALSE,
-      autoWidth = TRUE,
-      scrollY = TRUE
-    ),
-    rownames = FALSE
+  options = list(
+    paging = FALSE,
+    autoWidth = TRUE,
+    scrollY = TRUE
+  ),
+  rownames = FALSE
   ))
   
   
@@ -307,12 +327,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     
     as.data.frame(manual)
   },
-    options = list(
-      paging = FALSE,
-      autoWidth = TRUE,
-      scrollY = TRUE
-    ),
-    rownames = FALSE
+  options = list(
+    paging = FALSE,
+    autoWidth = TRUE,
+    scrollY = TRUE
+  ),
+  rownames = FALSE
   ))
   
   
@@ -328,18 +348,18 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       as.data.frame(identical)
     }
   },
-    options = list(
-      paging = FALSE,
-      autoWidth = TRUE,
-      scrollY = TRUE
-    ),
-    rownames = FALSE
+  options = list(
+    paging = FALSE,
+    autoWidth = TRUE,
+    scrollY = TRUE
+  ),
+  rownames = FALSE
   ))
-
-
-#----------- TABLES -------------
-
-#----------- DOWNLOAD HANDLERS -------------
+  
+  
+  #----------- TABLES -------------
+  
+  #----------- DOWNLOAD HANDLERS -------------
   
   
   output$downloadDictionary <- shiny::downloadHandler(
@@ -390,11 +410,11 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
         as.character(x)
       })
       
-      write.csv(bdDwC::rename_user_data(as.data.frame(data_original), dat),
+      write.csv(bdDwC::rename_user_data(as.data.frame(data_original()), dat),
                 file)
     }
   )
-
-#----------- DOWNLOAD HANDLERS -------------
-
+  
+  #----------- DOWNLOAD HANDLERS -------------
+  
 }

@@ -66,3 +66,12 @@ get_edit_string <- function(dataframe){
         )
     ), collapse = "\n "))
 }
+
+#' @export
+return_core <- function(reactiveObject){
+    if(class(reactiveObject) == "reactive" || class(reactiveObject) == "reactiveExpr"){
+        return(reactiveObject())
+    } else {
+        return(reactiveObject)
+    }
+}
