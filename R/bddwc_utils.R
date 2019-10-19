@@ -12,16 +12,19 @@ summarizeDataframe <- function(data) {
         return(data)
     }
     temp_data <- as.data.frame(data)
-    temp_data <-
-        temp_data[, names(temp_data) %in% c(
-            "scientificName",
-            "taxonRank",
-            "eventDate",
-            "country",
-            "decimalLatitude",
-            "decimalLongitude"
-        )]
-    temp_data <- cbind(temp_data, data)
+    cols <- which(tolower(names(data)) %in% c(
+        "scientificname",
+        "taxonrank",
+        "eventdate",
+        "country",
+        "decimallatitude",
+        "decimallongitude",
+        "latitude",
+        "longitute"
+    ))
+    
+    cols <- c(cols, setdiff(1:length(data), cols)); 
+    temp_data <- data[, cols] 
     hiding_cols <- c()
     temp_data[] <- lapply(temp_data, as.character)
     
