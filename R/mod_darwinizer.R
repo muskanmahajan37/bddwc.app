@@ -84,6 +84,7 @@ mod_darwinizer_ui <- function(id) {
 #' @export
 #' @keywords internal
 #' @importFrom utils write.csv
+#' @import bdutilities
 mod_darwinizer_server <- function(input, output, session, data_original, darwin_dictionary) {
   ns <- session$ns
   
@@ -151,7 +152,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     fixed_standards <- c(identical$name_old, darwinized$name_new)
     
     names_left <<- pre_names[!(pre_names %in% fixed_names)]
-    darwin_dictionary_unique <<- return_core(darwin_dictionary_unique)
+    darwin_dictionary_unique <<- bdutilities::return_core(darwin_dictionary_unique)
     darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% fixed_standards)]
     
     
@@ -287,7 +288,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$manual
     input$remove
     input$removeall
-    data.frame(standardNames = return_core(darwin_dictionary_unique))
+    data.frame(standardNames = bdutilities::return_core(darwin_dictionary_unique))
   },
   options = list(
     paging = FALSE,

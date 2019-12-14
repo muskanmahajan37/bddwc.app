@@ -2,14 +2,14 @@
 % Please edit documentation in R/bddwc_utils.R
 \name{get_edit_string}
 \alias{get_edit_string}
-\title{summarize biodiversity dataframe}
+\title{get representation of bddwc dictionary that can be edited by hand}
 \usage{
 get_edit_string(dataframe)
 }
 \arguments{
-\item{data}{biodiversity dataframe}
+\item{dataframe}{bddwc dictionary}
 }
 \description{
-Summary table function.
+Get text version of dictionary to show in edit tab.
 }
 \keyword{internal}
