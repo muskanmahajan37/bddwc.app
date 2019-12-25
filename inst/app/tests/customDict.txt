@@ -1,0 +1,3 @@
+fieldname	standard	vetted	namespace	source	comment
+LATITUDE	verbatimLatitude	1	dwc		If dwc:verbatimLatitude not populated       
+LONGITUDE	verbatimLongitude	1	dwc		If dwc:verbatimLongitude not populated      

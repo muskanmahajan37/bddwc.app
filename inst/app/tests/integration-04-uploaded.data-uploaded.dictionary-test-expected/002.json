@@ -1,0 +1,194 @@
+{
+  "input": {
+    "bdDarwinizer-darwinize": 0,
+    "bdDarwinizer-manual": 0,
+    "bdDarwinizer-remove": 0,
+    "bdDarwinizer-removeall": 0,
+    "bdDictionaryInput-addDictPanel": "Upload",
+    "bdDictionaryInput-cacheButton": 0,
+    "bdDictionaryInput-edit_text": "",
+    "bdDictionaryInput-inputFile": null,
+    "bdDictionaryInput-reset": 0,
+    "bdDictionaryInput-save": 0,
+    "bdDictionaryInput-updateCache": 0,
+    "bdFileInput-hasCoords": "3",
+    "bdFileInput-hasCoords-selectized": "",
+    "bdFileInput-inputFile": {
+      "name": [
+        "puma_concolor.csv"
+      ],
+      "size": [
+        16398201
+      ],
+      "type": [
+        "text/csv"
+      ],
+      "datapath": [
+        "0.csv"
+      ]
+    },
+    "bdFileInput-mapColor": "red",
+    "bdFileInput-mapColor-selectized": "",
+    "bdFileInput-mapTexture": "CartoDB.Positron",
+    "bdFileInput-mapTexture-selectized": "",
+    "bdFileInput-mymap_bounds": {
+      "north": 76.6797849031069,
+      "east": 91.40625,
+      "south": -76.6797849031069,
+      "west": -91.0546875
+    },
+    "bdFileInput-mymap_center": {
+      "lng": 0,
+      "lat": 0
+    },
+    "bdFileInput-mymap_zoom": 2,
+    "bdFileInput-queryDatabase": 0,
+    "bdFileInput-queryDB": "gbif",
+    "bdFileInput-recordSize": 500,
+    "bdFileInput-scientificName": "Puma concolor",
+    "citation_ui_1-citation_level": "1",
+    "dataToDictionary": 1,
+    "dictionaryToDarwin": 0,
+    "sideBar": "configure",
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "viewPanels": "Dictionary"
+  },
+  "output": {
+    "bdDictionaryInput-dictionaryView": {
+      "x": null,
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "dt-core",
+          "version": "1.10.16",
+          "src": {
+            "href": "dt-core-1.10.16"
+          },
+          "meta": null,
+          "script": "js/jquery.dataTables.min.js",
+          "stylesheet": [
+            "css/jquery.dataTables.min.css",
+            "css/jquery.dataTables.extra.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": false
+        },
+        {
+          "name": "jquery",
+          "version": "1.11.3",
+          "src": {
+            "href": "jquery-1.11.3"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.0.0",
+          "src": {
+            "href": "crosstalk-1.0.0"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "bdFileInput-mymap": {
+      "x": {
+        "options": {
+          "crs": {
+            "crsClass": "L.CRS.EPSG3857",
+            "code": null,
+            "proj4def": null,
+            "projectedBounds": null,
+            "options": {
+
+            }
+          }
+        },
+        "calls": [
+          {
+            "method": "addProviderTiles",
+            "args": [
+              "CartoDB.Positron",
+              null,
+              null,
+              {
+                "errorTileUrl": "",
+                "noWrap": false,
+                "detectRetina": false
+              }
+            ]
+          }
+        ],
+        "setView": [
+          [
+            0,
+            0
+          ],
+          2,
+          [
+
+          ]
+        ]
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "leaflet-providers",
+          "version": "1.1.17",
+          "src": {
+            "href": "leaflet-providers-1.1.17"
+          },
+          "meta": null,
+          "script": "leaflet-providers.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "leaflet-providers-plugin",
+          "version": "2.0.2",
+          "src": {
+            "href": "leaflet-providers-plugin-2.0.2"
+          },
+          "meta": null,
+          "script": "leaflet-providers-plugin.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

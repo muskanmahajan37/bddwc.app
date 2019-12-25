@@ -66,7 +66,7 @@ mod_darwinizer_ui <- function(id) {
              column(4, div(
                h4("Manual Renames", class = "control-header"),
                div(class = "control-header stats-green", textOutput(ns("manual_count"))),
-               DT::dataTableOutput(ns("manual"))
+               DT::dataTableOutput(ns("manualized"))
              )),
              column(3, div(
                h4("Identical Matches", class = "control-header"),
@@ -91,7 +91,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
   # data_original <- shiny::observe(data_original_temp)
   identical <- data.frame()
   darwinized <- data.frame()
-  manual <- data.frame()
+  manuals <- data.frame()
   names_left <-  reactive(names(data_original()))
   darwin_dictionary_unique <- reactive(unique(darwin_dictionary()$standard))
   is_darwinized <- FALSE
@@ -122,7 +122,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       input$manual
       input$remove
       input$removeall
-      nrow(manual)
+      nrow(manuals)
     })
   
   output$identitical_count <-
@@ -190,7 +190,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       from_name <- names_left[from]
       to_name <- darwin_dictionary_unique[to]
       
-      manual <<- rbind(manual, data.frame(name_old = from_name, name_new = to_name))
+      manuals <<- rbind(manuals, data.frame(name_old = from_name, name_new = to_name))
       
       pre_names <- names_left
       names_left <<- pre_names[!(pre_names %in% from_name)]
@@ -206,7 +206,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     }
     
     darwin_rem <- input$darwinized_rows_selected
-    manual_rem <- input$manual_rows_selected
+    manual_rem <- input$manualized_rows_selected
     identic_rem <- input$identical_rows_selected
     
     if(length(darwin_rem) > 0){
@@ -220,12 +220,12 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     }
     
     if(length(manual_rem) > 0){
-      names <- as.character(manual[manual_rem, 1])
+      names <- as.character(manuals[manual_rem, 1])
       
-      names_darwin <- as.character(manual[manual_rem, 2])
+      names_darwin <- as.character(manuals[manual_rem, 2])
       darwin_dictionary_unique <<- c(names_darwin, darwin_dictionary_unique)
       
-      manual <<- manual[c(-1 * manual_rem), ]
+      manuals <<- manuals[c(-1 * manual_rem), ]
       names_left <<- c(names, names_left)
     }
     
@@ -251,7 +251,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     
     identical <<- data.frame()
     darwinized <<- data.frame()
-    manual <<- data.frame()
+    manuals <<- data.frame()
     
     names_left <<-  names(data_original())
     darwin_dictionary_unique <<- unique(darwin_dictionary()$standard)
@@ -321,13 +321,13 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
   ))
   
   
-  output$manual <- DT::renderDataTable(DT::datatable({
+  output$manualized <- DT::renderDataTable(DT::datatable({
     input$darwinize
     input$manual
     input$remove
     input$removeall
     
-    as.data.frame(manual)
+    as.data.frame(manuals)
   },
   options = list(
     paging = FALSE,
@@ -378,8 +378,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       if (nrow(identical) != 0)
         df <- rbind(df, data.frame(name_old = identical[, 1], name_new = identical[, 1]))
       
-      if (nrow(manual) != 0)
-        df <- rbind(df, manual)
+      if (nrow(manuals) != 0)
+        df <- rbind(df, manuals)
       
       if (nrow(darwinized) != 0)
         df <- rbind(df, darwinized)
@@ -400,13 +400,13 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
         return()
       }
       
-      manual[, ] <- lapply(manual, function(x) {
+      manuals[, ] <- lapply(manuals, function(x) {
         as.character(x)
       })
       
       dat <- data.frame(
-        name_old = c(identical[, 1], darwinized$name_old, manual$name_old),
-        name_new = c(identical[, 1], darwinized$name_new, manual$name_new)
+        name_old = c(identical[, 1], darwinized$name_old, manuals$name_old),
+        name_new = c(identical[, 1], darwinized$name_new, manuals$name_new)
       )
       dat[, ] <- lapply(dat, function(x) {
         as.character(x)
