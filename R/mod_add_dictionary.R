@@ -72,6 +72,7 @@ mod_add_dictionary_ui <- function(id) {
     column(8,
            tabsetPanel(
              type = "tabs",
+             id = "viewPanels",
              
              # 1
              tabPanel(
@@ -216,7 +217,13 @@ mod_add_dictionary_server <-
     
     
     observeEvent(input$inputFile, {
-      returnData <<- read.csv(input$inputFile$datapath)
+      if (input$inputFile$type == "text/csv"){
+        returnData <<- read.csv(input$inputFile$datapath)
+      } else if (input$inputFile$type == "text/plain"){
+        returnData <<- data.table::fread(input$inputFile$datapath, header = T, sep = "\t", data.table = F)
+      } else {
+        showNotification("Incorrect Format")
+      }
     })
     
     
@@ -224,6 +231,7 @@ mod_add_dictionary_server <-
     output$dictionaryView <- DT::renderDataTable({
       input$cacheButton
       input$updateCache
+      input$inputFile
       
       return(returnData)
     }, options = list(scrollX = TRUE))
