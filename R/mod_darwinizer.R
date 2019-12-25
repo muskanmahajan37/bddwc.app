@@ -206,7 +206,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     }
     
     darwin_rem <- input$darwinized_rows_selected
-    manual_rem <- input$Mannualized_rows_selected
+    manual_rem <- input$manualized_rows_selected
     identic_rem <- input$identical_rows_selected
     
     if(length(darwin_rem) > 0){
