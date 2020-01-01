@@ -13,6 +13,7 @@
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
+#' @importFrom bdutilities flatten_data
 mod_darwinizer_ui <- function(id) {
   ns <- NS(id)
   tagList(column(
@@ -84,7 +85,9 @@ mod_darwinizer_ui <- function(id) {
 #' @export
 #' @keywords internal
 #' @importFrom utils write.csv
-#' @import bdutilities
+#' @importFrom  bdutilities flatten_data
+#' @importFrom data.table fwrite
+#' @import bdDwC shinyjs DT shiny 
 mod_darwinizer_server <- function(input, output, session, data_original, darwin_dictionary) {
   ns <- session$ns
   
@@ -375,14 +378,17 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       
       df <- data.frame(name_old = "dummy", name_new = "dummy")
       
-      if (nrow(identical) != 0)
+      if (nrow(identical) != 0){
         df <- rbind(df, data.frame(name_old = identical[, 1], name_new = identical[, 1]))
+      }
       
-      if (nrow(manuals) != 0)
+      if (nrow(manuals) != 0){
         df <- rbind(df, manuals)
+      }
       
-      if (nrow(darwinized) != 0)
-        df <- rbind(df, darwinized)
+      if (nrow(darwinized) != 0){
+        df <- rbind(df, darwinized[, c("name_old", "name_new")])
+      }
       
       # removing dummy row
       df <- df[-c(1),]
@@ -412,7 +418,7 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
         as.character(x)
       })
       
-      write.csv(bdDwC::rename_user_data(as.data.frame(data_original()), dat),
+      data.table::fwrite(bdDwC::rename_user_data(flatten_data(data_original()), dat),
                 file)
     }
   )
