@@ -1501,7 +1501,7 @@
       ]
     },
     "citation_ui_1-citationsUI": {
-      "html": "<h3>R<\/h3>\n<p>R Core Team (2019). _R: A Language and Environment for Statistical\nComputing_. R Foundation for Statistical Computing, Vienna, Austria.\n&lt;URL: https://www.R-project.org/&gt;.<\/p>\n<h3>bddwc.app<\/h3>\n<p>Gueta T, Barve V, Nagarajah T, Gibas P, Carmel Y (2019). _bddwc.app: A\nUser-Friendly Graphical Interface for Darwinizing Biodiversity\nDatasets_. R package version 0.0.7, &lt;URL:\nhttps://github.com/bd-R/bddwc.app&gt;.<\/p>",
+      "html": "<h3>R<\/h3>\n<p>R Core Team (2019). _R: A Language and Environment for Statistical\nComputing_. R Foundation for Statistical Computing, Vienna, Austria.\n&lt;URL: https://www.R-project.org/&gt;.<\/p>\n<h3>bddwc.app<\/h3>\n<p>Gueta T, Barve V, Nagarajah T, Gibas P, Carmel Y (2020). _bddwc.app: A\nUser-Friendly Graphical Interface for Darwinizing Biodiversity\nDatasets_. R package version 0.0.10, &lt;URL:\nhttps://github.com/bd-R/bddwc.app&gt;.<\/p>",
       "deps": [
 
       ]
