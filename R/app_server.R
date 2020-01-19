@@ -1,6 +1,9 @@
 #' @import shiny bdutilities.app
 app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 50 * 1024 ^ 2)
+  session$onSessionEnded(function() {
+    stopApp()
+  })
   
   #------------- Data --------------
   data_store <-
