@@ -77,7 +77,7 @@ app_ui <- function() {
   
 }
 
-#' @import shiny shinyjs
+#' @import shiny shinyjs golem
 golem_add_external_resources <- function() {
   addResourcePath('www', system.file('app/www', package = 'bddwc.app'))
   
