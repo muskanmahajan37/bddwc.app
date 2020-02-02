@@ -123,6 +123,7 @@ mod_add_dictionary_ui <- function(id) {
 #' @export
 #' @keywords internal
 #' @import bdDwC DT
+#' @importFrom utils read.csv
 mod_add_dictionary_server <-
   function(input, output, session, next_button_id = "dataToConfigureDiv") {
     ns <- session$ns

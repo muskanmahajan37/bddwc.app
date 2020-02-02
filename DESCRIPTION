@@ -33,8 +33,10 @@ Maintainer: Thiloshon Nagarajah <thiloshon@gmail.com>
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Imports:
+    data.table,
     DT,
+    golem,
     shiny,
     shinydashboard,
     shinyjs,
@@ -50,4 +52,5 @@ RoxygenNote: 6.1.1
 URL: https://github.com/bd-R/bddwc.app
 BugReports: https://github.com/bd-R/bddwc.app/issues
 Suggests: 
-    testthat
+    testthat,
+    shinytest
