@@ -411,6 +411,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       # removing dummy row
       df <- df[-c(1),]
       
+      colnames(df) <- c("fieldname", "standard")
+      
       data.table::fwrite(df, file)
     }
   )
