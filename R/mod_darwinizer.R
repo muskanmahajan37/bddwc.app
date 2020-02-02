@@ -13,7 +13,6 @@
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
-#' @importFrom bdutilities flatten_data
 mod_darwinizer_ui <- function(id) {
   ns <- NS(id)
   tagList(column(
@@ -41,15 +40,22 @@ mod_darwinizer_ui <- function(id) {
         div(id = "controls", 
             
             fluidRow(actionButton(ns("darwinize"), "Darwinize", icon("award"), class = "activeButton shadow")),
-            br(),
+            hr(),
             fluidRow(actionButton(ns("manual"), "", icon("arrow-circle-right"), class = "readyButton shadow")),
             fluidRow(actionButton(ns("remove"), "", icon("backspace"), class = "readyButton shadow")),
             fluidRow(actionButton(ns("removeall"), "", icon("times-circle"), class = "readyButton shadow")),
+            hr(),
             
-            br(),
+            
+            uiOutput(ns("downloadOptions")),
+            
+            
             fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow")),
             
             br(),
+            
+            helpText("Download Dictionary"),
+          
             fluidRow(downloadButton(ns("downloadDictionary"), "", class = "readyButton shadow")))
         
         
@@ -85,7 +91,6 @@ mod_darwinizer_ui <- function(id) {
 #' @export
 #' @keywords internal
 #' @importFrom utils write.csv
-#' @importFrom  bdutilities flatten_data
 #' @importFrom data.table fwrite
 #' @import bdDwC shinyjs DT shiny 
 mod_darwinizer_server <- function(input, output, session, data_original, darwin_dictionary) {
@@ -263,6 +268,19 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
   
   #---------- BUTTON --------------
   
+  output$downloadOptions <- renderUI({
+    tagList(
+      selectInput(ns("dataformat_input"),
+                  "Download Data",
+                  choices = if (!("list" %in% sapply(data_original(), class))) {
+                    c(list("CSV" = "csv", "TXT" = "txt"),
+                      list("RDS" = "rds", "RDA" = "rda"))
+                  } else {
+                    list("RDS" = "rds", "RDA" = "rda")
+                  })
+    ) 
+  })
+  
   #----------- TABLES -------------
   
   output$original <- DT::renderDataTable(DT::datatable({
@@ -398,14 +416,29 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
   )
   
   output$downloadData <- shiny::downloadHandler(
-    filename = format(Sys.time(), "darwinizedData_%Y_%b_%d.csv"),
-    content = function(file) {
+    filename = function() {
+      paste("darwinizedData-", Sys.Date(), switch(
+        input$dataformat_input,
+        "csv" = ".csv",
+        "txt" = ".txt",
+        "rds" = ".RDS",
+        "rda" = ".RDA"
+      ), sep = "")
+    },
+    content = function(con) {
       if(!is_darwinized){
         showNotification("Please Darwinize First",
                          duration = 6) 
         return()
       }
       
+      # if((grepl(".csv", file) || grepl(".txt", file)) &&
+      #    ("list" %in% sapply(data_original(), class))) {
+      #   showNotification("Input data is complex to be written as CSV or Text. Try other options",
+      #                    duration = 6)
+      #   return()
+      # }
+       
       manuals[, ] <- lapply(manuals, function(x) {
         as.character(x)
       })
@@ -418,8 +451,15 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
         as.character(x)
       })
       
-      data.table::fwrite(bdDwC::rename_user_data(flatten_data(data_original()), dat),
-                file)
+      darwinized_data <- bdDwC::rename_user_data(as.data.frame(data_original()), dat)
+      
+      switch(
+        input$dataformat_input,
+        "csv" = write.csv(darwinized_data, con),
+        "txt" = write.table(darwinized_data, con),
+        "rds" = saveRDS(darwinized_data, con),
+        "rda" = save(darwinized_data, file = con)
+      )
     }
   )
   

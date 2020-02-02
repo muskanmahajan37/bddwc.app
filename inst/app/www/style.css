@@ -194,3 +194,12 @@ body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
     color: #fff;
     opacity: 1;
 }
+
+hr {
+  border-top: 1px solid #795548;
+}
+
+#controls .shiny-bound-output{
+  max-width: 100px;
+  margin-bottom: 0;
+}
