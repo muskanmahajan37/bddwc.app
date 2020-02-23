@@ -51,5 +51,28 @@ app_server <- function(input, output, session) {
       updateTabItems(session, "sideBar", "darwinize")
     }
   })
+  
+  observeEvent(input$sideBar, {
+    dat <- data_store$data_user
+    dict <- data_store$dictionary
+    
+    if(input$sideBar == "configure"){
+      if (length(dat()) == 0) {
+        updateTabItems(session, "sideBar", "add")
+        showNotification("Please add data",
+                         duration = 6)
+        
+      } 
+    } else if (input$sideBar == "darwinize"){
+      if (length(dict()) == 0) {
+        updateTabItems(session, "sideBar", "configure")
+        showNotification("Please add dictionary",
+                         duration = 6)
+        
+      } 
+    }
+  })
+  
+  
   #------------- Events --------------
 }

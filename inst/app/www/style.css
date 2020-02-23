@@ -66,6 +66,16 @@ body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, .main-header .logo {
   overflow-x: hidden !important;
 }
 
+#bdDarwinizer-IDE .downloadDataButton {
+  margin-top: -10px;
+}
+
+#bdDarwinizer-IDE .help-block {
+  margin-bottom: 0;
+}
+
+
+
 #origin {
   padding-bottom: 30px;
         border: 2px solid crimson;

@@ -50,8 +50,10 @@ mod_darwinizer_ui <- function(id) {
             uiOutput(ns("downloadOptions")),
             
             
-            fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow")),
+            fluidRow(downloadButton(ns("downloadData"), "", class = "readyButton shadow downloadDataButton")),
             
+            br(),
+            br(),
             br(),
             
             helpText("Download Dictionary"),
@@ -309,7 +311,10 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$manual
     input$remove
     input$removeall
-    data.frame(standardNames = bdutilities::return_core(darwin_dictionary_unique))
+    
+    data.frame(standardNames = sapply(bdutilities::return_core(darwin_dictionary_unique), function(x) 
+      toString(tags$a(href=paste0("https://dwc.tdwg.org/terms/#", x), x, target="_blank"))))
+    
   },
   options = list(
     paging = FALSE,
@@ -317,7 +322,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     scrollY = TRUE
   ),
   rownames = FALSE,
-  selection = 'single'
+  selection = 'single',
+  escape = F
   ))
   
   
@@ -328,7 +334,10 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$removeall
     
     if(length(as.data.frame(identical)) > 0){
-      as.data.frame(darwinized[, 1:2])
+      datTemp <- as.data.frame(darwinized[, 1:2])
+      datTemp[,2] <- sapply(datTemp[,2], function(x) 
+        toString(tags$a(href=paste0("https://dwc.tdwg.org/terms/#", x), x, target="_blank")))
+      datTemp
     } else {
       as.data.frame(darwinized)
     }
@@ -338,7 +347,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     autoWidth = TRUE,
     scrollY = TRUE
   ),
-  rownames = FALSE
+  rownames = FALSE,
+  escape = F
   ))
   
   
@@ -365,8 +375,11 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     input$remove
     input$removeall
     
+    
+    
     if(length(as.data.frame(identical)) > 0){
-      data.frame(name_same = identical[, 2:2])
+      data.frame(name_same = sapply(identical[, 2:2], function(x) 
+        toString(tags$a(href=paste0("https://dwc.tdwg.org/terms/#", x), x, target="_blank"))))
     } else {
       as.data.frame(identical)
     }
@@ -376,7 +389,8 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
     autoWidth = TRUE,
     scrollY = TRUE
   ),
-  rownames = FALSE
+  rownames = FALSE,
+  escape = F
   ))
   
   
