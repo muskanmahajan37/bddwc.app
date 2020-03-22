@@ -4,5 +4,5 @@
 #' @importFrom shiny runApp
 bddwc_app <- function() {
   #shiny::runApp(system.file("app", package = "bddwc.app"), launch.browser = TRUE)
-  shiny::shinyAppDir(system.file("app", "bddwc.app"))
+  shiny::shinyAppDir(system.file("app", package =  "bddwc.app"))
 }
