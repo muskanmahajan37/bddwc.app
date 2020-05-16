@@ -206,13 +206,6 @@ mod_darwinizer_server <- function(input, output, session, data_original, darwin_
       names_left <<- pre_names[!(pre_names %in% from_name)]
       darwin_dictionary_unique <<- darwin_dictionary_unique[!(darwin_dictionary_unique %in% to_name)]
     }
-    
-    print("meow")
-    
-    proxy = dataTableProxy('manualized')
-    observe({
-      reloadData(proxy)
-    })
   })
   
   observeEvent(input$remove, {
