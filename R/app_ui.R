@@ -1,4 +1,5 @@
 #' @import shiny shinydashboard bdutilities.app
+#' @export
 app_ui <- function() {
   tagList(
     dashboardPage(

@@ -1,4 +1,5 @@
 #' @import shiny bdutilities.app
+#' @export
 app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 50 * 1024 ^ 2)
   session$onSessionEnded(function() {
